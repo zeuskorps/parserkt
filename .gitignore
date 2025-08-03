@@ -1,0 +1,11 @@
+/.gradle/
+/build/
+/.kotlin/
+/out/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+.idea/
+*.iml
+*.ipr
+*.iws
+!src/**/out/
