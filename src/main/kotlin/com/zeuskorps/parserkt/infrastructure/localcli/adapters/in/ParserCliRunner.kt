@@ -14,7 +14,7 @@ class ParserCliRunner(
     private val apkgProviderPort: ApkgProviderPort,
     private val flashcardRepositoryPort: InMemoryFlashcardRepository
 ) {
-    fun run(markdownPath: String?) {
+   suspend fun run(markdownPath: String?) {
         val filePath = markdownPath?.takeIf { it.isNotBlank() } ?: prompt("📄 Digite o caminho do arquivo .md:")
         if (filePath.isNullOrBlank()) {
             println("❌ Nenhum caminho fornecido.")

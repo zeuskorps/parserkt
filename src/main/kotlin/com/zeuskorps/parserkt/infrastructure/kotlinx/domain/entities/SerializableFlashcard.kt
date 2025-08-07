@@ -24,3 +24,14 @@ fun FlashcardDto.toSerializable(): SerializableFlashcard =
         counterExampleCorrection,
         challenge
     )
+
+fun SerializableFlashcard.toDto(): FlashcardDto =
+    FlashcardDto(
+        universe,
+        question,
+        response,
+        example,
+        counterExample,
+        counterExampleCorrection,
+        challenge
+    )

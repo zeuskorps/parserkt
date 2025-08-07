@@ -6,10 +6,9 @@ import com.zeuskorps.parserkt.application.ports.`in`.WriteTsvPort
 import com.zeuskorps.parserkt.application.ports.out.ApkgProviderPort
 import com.zeuskorps.parserkt.infrastructure.localcli.adapters.`in`.ParserCliRunner
 import com.zeuskorps.parserkt.infrastructure.localcli.adapters.out.InMemoryFlashcardRepository
-import com.zeuskorps.parserkt.infrastructure.python_apkg_adapter.application.ports.out.PythonEnvironmentProviderPort
 
-class ParserCliRunnerConfig(
-) {
+object ParserCliRunnerConfig
+ {
     fun provideParserCliRunner(parserFlashcardPort: ParseFlashcardPort,
                                 writeCsvPort: WriteCsvPort,
                                 writeTsvPort: WriteTsvPort,

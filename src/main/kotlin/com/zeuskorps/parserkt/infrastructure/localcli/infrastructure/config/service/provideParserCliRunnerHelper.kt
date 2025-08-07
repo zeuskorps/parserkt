@@ -5,16 +5,16 @@ import com.zeuskorps.parserkt.application.usecases.WriteCsvUseCase
 import com.zeuskorps.parserkt.application.usecases.WriteTsvUseCase
 import com.zeuskorps.parserkt.infrastructure.archso.adapters.out.ArchPythonVenvAdapter
 import com.zeuskorps.parserkt.infrastructure.compositefileloaderprovider.infrastructure.config.service.regex.provideRegexFileLoaders
+import com.zeuskorps.parserkt.infrastructure.compositeparserflashcardstratregy.infrastructure.config.service.CompositeFlashcardParserStrategyProviderConfig
 import com.zeuskorps.parserkt.infrastructure.compositeserializationprovider.infrastructure.config.service.regex.CompositeRegexSerializationProviderConfig
 import com.zeuskorps.parserkt.infrastructure.kotlinx.infrastructure.adapters.out.KotlinxFlashcardSerializationProviderAdapter
 import com.zeuskorps.parserkt.infrastructure.localcli.adapters.`in`.ParserCliRunner
 import com.zeuskorps.parserkt.infrastructure.localcli.adapters.out.InMemoryFlashcardRepository
 import com.zeuskorps.parserkt.infrastructure.python_apkg_adapter.infrastructure.adapter.out.PythonApkgProviderAdapter
 import com.zeuskorps.parserkt.infrastructure.regex.application.usecases.RegexPatternFileLoaderUseCase
-import com.zeuskorps.parserkt.infrastructure.regex.domain.valueobjects.FlashcardPattern
-import com.zeuskorps.parserkt.infrastructure.regex.infrastructure.adapters.out.RegexFlashcardParserStrategyAdapter
+import com.zeuskorps.parserkt.infrastructure.regex.domain.valueobjects.RegexFlashcardPattern
 
-fun provideParserCliRunner(patternPath: String?): ParserCliRunner {
+fun provideParserCliRunnerHelper(patternPath: String?): ParserCliRunner {
     val serializationProviders = CompositeRegexSerializationProviderConfig.raw()
     val compositeSerialization = CompositeRegexSerializationProviderConfig.provide(serializationProviders)
     val fileLoaders = provideRegexFileLoaders(serializationProviders)
@@ -25,12 +25,14 @@ fun provideParserCliRunner(patternPath: String?): ParserCliRunner {
             defaultPath = patternPath
         )
         val config = regexUseCase.load()
-        FlashcardPattern.fromConfigMap("flashcard", config)
+        RegexFlashcardPattern.fromConfigMap("flashcard", config)
     } else {
-        FlashcardPattern.default
+        RegexFlashcardPattern.default
     }
 
-    val parserStrategy = RegexFlashcardParserStrategyAdapter(pattern)
+    // 🔥 USANDO O NOVO COMPOSITE COM FLEXIBLE OLLAMA
+    val parserStrategy = CompositeFlashcardParserStrategyProviderConfig.provideCompositeParserStrategyProvider()
+
     val parser = ParseFlashcardUseCase(parserStrategy)
     val repository = InMemoryFlashcardRepository()
     val csv = WriteCsvUseCase(repository)
@@ -39,7 +41,7 @@ fun provideParserCliRunner(patternPath: String?): ParserCliRunner {
     val pythonEnv = ArchPythonVenvAdapter()
     val apkg = PythonApkgProviderAdapter(serializationForApkg, pythonEnv)
 
-    return ParserCliRunnerConfig().provideParserCliRunner(
+    return ParserCliRunnerConfig.provideParserCliRunner(
         parserFlashcardPort = parser,
         writeCsvPort = csv,
         writeTsvPort = tsv,

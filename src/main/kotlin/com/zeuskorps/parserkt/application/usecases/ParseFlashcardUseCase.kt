@@ -2,15 +2,15 @@ package com.zeuskorps.parserkt.application.usecases
 
 import com.zeuskorps.parserkt.application.dto.ParseFlashcardResponse
 import com.zeuskorps.parserkt.application.ports.`in`.ParseFlashcardPort
-import com.zeuskorps.parserkt.application.ports.out.FlashcardParserStrategyPort
+import com.zeuskorps.parserkt.application.ports.out.FlashcardParserStrategyProviderPort
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
 class ParseFlashcardUseCase(
-    private val parserStrategy: FlashcardParserStrategyPort
+    private val parserStrategy: FlashcardParserStrategyProviderPort
 ) : ParseFlashcardPort {
 
-    override fun parse(filePath: String): ParseFlashcardResponse {
+    override suspend fun parse(filePath: String): ParseFlashcardResponse {
         val content = Path(filePath).readText()
         val flashcards = parserStrategy.parse(content)
 

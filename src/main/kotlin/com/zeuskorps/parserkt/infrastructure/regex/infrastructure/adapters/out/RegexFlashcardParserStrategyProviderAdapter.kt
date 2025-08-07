@@ -1,14 +1,14 @@
 package com.zeuskorps.parserkt.infrastructure.regex.infrastructure.adapters.out
 
 import com.zeuskorps.parserkt.application.dto.FlashcardDto
-import com.zeuskorps.parserkt.application.ports.out.FlashcardParserStrategyPort
-import com.zeuskorps.parserkt.infrastructure.regex.domain.valueobjects.FlashcardPattern
+import com.zeuskorps.parserkt.application.ports.out.FlashcardParserStrategyProviderPort
+import com.zeuskorps.parserkt.infrastructure.regex.domain.valueobjects.RegexFlashcardPattern
 
-class RegexFlashcardParserStrategyAdapter(
-    private val pattern: FlashcardPattern
-) : FlashcardParserStrategyPort {
+class RegexFlashcardParserStrategyProviderAdapter(
+    private val pattern: RegexFlashcardPattern
+) : FlashcardParserStrategyProviderPort {
 
-    override fun parse(rawContent: String): List<FlashcardDto> {
+    override suspend fun parse(rawContent: String): List<FlashcardDto> {
         return pattern.regex.findAll(rawContent).map {
             val groups = it.groupValues.drop(1).map(String::trim)
 

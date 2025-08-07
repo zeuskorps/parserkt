@@ -1,6 +1,6 @@
 package com.zeuskorps.parserkt.infrastructure.regex.domain.valueobjects
 
-data class FlashcardPattern(val rawPattern: String) {
+data class RegexFlashcardPattern(val rawPattern: String) {
     val regex: Regex
 
     init {
@@ -13,7 +13,7 @@ data class FlashcardPattern(val rawPattern: String) {
 
     companion object {
 
-        val default: FlashcardPattern = FlashcardPattern(
+        val default: RegexFlashcardPattern = RegexFlashcardPattern(
             """
             ### \[\d+]\s*
             \*\*\[Universo]\*\*\s*(.*?)\s*
@@ -27,20 +27,20 @@ data class FlashcardPattern(val rawPattern: String) {
             """.trimIndent()
         )
 
-        fun fromConfigMap(name: String, config: Map<String, String>): FlashcardPattern {
+        fun fromConfigMap(name: String, config: Map<String, String>): RegexFlashcardPattern {
             val pattern = config[name]
                 ?: throw IllegalArgumentException("❌ Padrão '$name' não encontrado na configuração.")
-            return FlashcardPattern(pattern)
+            return RegexFlashcardPattern(pattern)
         }
 
-        fun fromEnvOrDefault(envVar: String = "FLASHCARD_PATTERN"): FlashcardPattern {
+        fun fromEnvOrDefault(envVar: String = "FLASHCARD_PATTERN"): RegexFlashcardPattern {
             val pattern = System.getenv(envVar)
             return if (pattern.isNullOrBlank()) {
                 println("⚠️ Nenhuma variável de ambiente '$envVar' encontrada. Usando padrão default.")
                 default
             } else {
                 println("🔧 Carregando padrão de parsing via variável '$envVar'")
-                FlashcardPattern(pattern)
+                RegexFlashcardPattern(pattern)
             }
         }
     }
